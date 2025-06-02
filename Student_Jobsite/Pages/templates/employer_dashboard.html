@@ -1,0 +1,915 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELEVATE | Talent War Room</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+    <style>
+        :root {
+            --primary: #0a0a0a;
+            --secondary: #121212;
+            --accent: #d4af37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text: #f0f0f0;
+            --text-dim: #aaaaaa;
+            --danger: #ff3860;
+            --success: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* MAIN LAYOUT */
+        .employer-dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR (Luxury Panel) */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, var(--secondary) 100%);
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 30px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: pulse 15s infinite alternate;
+        }
+
+        .company-card {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+            margin: 0 auto 15px;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .company-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .company-tier {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid var(--accent);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        /* MAIN DASHBOARD (Talent War Room) */
+        .war-room {
+            padding: 30px;
+            background: url('https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&auto=format&fit=crop&w=2232&q=80') no-repeat center center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .war-room::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(1px);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* TALENT RADAR GRID */
+        .talent-radar {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 40px;
+        }
+
+        .radar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .radar-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .radar-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-tag {
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .filter-tag.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .radar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* CANDIDATE CARD (3D Holographic Style) */
+        .candidate-card {
+            background: rgba(26, 26, 26, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+        }
+
+        .candidate-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .candidate-card:hover::after {
+            opacity: 1;
+        }
+
+        .candidate-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .candidate-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .candidate-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .candidate-title {
+            color: var(--accent);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .candidate-match {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .candidate-stats {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .candidate-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        /* 3D HOLOGRAPHIC VIEWER */
+        .holographic-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .holographic-container {
+            width: 600px;
+            height: 600px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .holographic-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        #holographic-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* COMPETITOR INTELLIGENCE */
+        .competitor-intel {
+            background: rgba(26, 26, 26, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .competitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .competitor-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .competitor-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .competitor-item {
+            min-width: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .competitor-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            object-fit: cover;
+        }
+
+        /* TALENT AUCTION MODE */
+        .auction-mode {
+            background: rgba(26, 26, 26, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            margin-bottom: 30px;
+        }
+
+        .auction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .auction-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .auction-timer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .auction-candidates {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .auction-card {
+            min-width: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .auction-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .auction-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .current-bid {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .bid-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .bid-input input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            padding: 8px 15px;
+            color: var(--text);
+        }
+
+        .bid-btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ANIMATIONS */
+        @keyframes pulse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .radar-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .employer-dashboard {
+                grid-template-columns: 250px 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .employer-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- EMPLOYER DASHBOARD -->
+    <div class="employer-dashboard">
+        <!-- LUXURY SIDEBAR -->
+        <div class="sidebar">
+            <div class="company-card">
+                <img src="https://logo.clearbit.com/google.com" class="company-logo">
+                <h3 class="company-name">Google</h3>
+                <span class="company-tier">TIER 1 EMPLOYER</span>
+            </div>
+            
+            <div class="nav-item active">
+                <i class="fas fa-satellite-dish"></i>
+                <span>Talent Radar</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-trophy"></i>
+                <span>Top 1% Pipeline</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chess-king"></i>
+                <span>Competitor Intel</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-gavel"></i>
+                <span>Talent Auction</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-bolt"></i>
+                <span>Quick Offers</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-network"></i>
+                <span>AI Matchmaker</span>
+            </div>
+        </div>
+        
+        <!-- TALENT WAR ROOM -->
+        <div class="war-room">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Talent War Room</h1>
+                <div class="dashboard-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-sliders-h"></i> Filters
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-bolt"></i> Quick Hire
+                    </button>
+                </div>
+            </div>
+            
+            <!-- TALENT RADAR -->
+            <div class="talent-radar">
+                <div class="radar-header">
+                    <h2 class="radar-title">Active Candidates</h2>
+                    <div class="radar-filters">
+                        <span class="filter-tag active">All</span>
+                        <span class="filter-tag">Engineering</span>
+                        <span class="filter-tag">Design</span>
+                        <span class="filter-tag">Product</span>
+                        <span class="filter-tag">$200K+</span>
+                    </div>
+                </div>
+                
+                <div class="radar-grid">
+                    <!-- Candidate 1 -->
+                    <div class="candidate-card" onclick="openHolographicView()">
+                        <div class="candidate-header">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="candidate-avatar">
+                            <div class="candidate-info">
+                                <h3>Sarah Chen</h3>
+                                <p class="candidate-title">Senior AI Researcher</p>
+                                <span class="candidate-match">97% Match</span>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">$280K</div>
+                                <div class="stat-label">Expected</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Offers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">24h</div>
+                                <div class="stat-label">Left</div>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-paper-plane"></i> Offer
+                            </button>
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-eye"></i> Profile
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Candidate 2 -->
+                    <div class="candidate-card" onclick="openHolographicView()">
+                        <div class="candidate-header">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="candidate-avatar">
+                            <div class="candidate-info">
+                                <h3>James Wilson</h3>
+                                <p class="candidate-title">Lead UX Designer</p>
+                                <span class="candidate-match">95% Match</span>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">$220K</div>
+                                <div class="stat-label">Expected</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">Offers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">48h</div>
+                                <div class="stat-label">Left</div>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-paper-plane"></i> Offer
+                            </button>
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-eye"></i> Profile
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Candidate 3 -->
+                    <div class="candidate-card" onclick="openHolographicView()">
+                        <div class="candidate-header">
+                            <img src="https://randomuser.me/api/portraits/men/22.jpg" class="candidate-avatar">
+                            <div class="candidate-info">
+                                <h3>Michael Rodriguez</h3>
+                                <p class="candidate-title">CTO Potential</p>
+                                <span class="candidate-match">99% Match</span>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">$350K</div>
+                                <div class="stat-label">Expected</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">7</div>
+                                <div class="stat-label">Offers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">12h</div>
+                                <div class="stat-label">Left</div>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-paper-plane"></i> Offer
+                            </button>
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-eye"></i> Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COMPETITOR INTELLIGENCE -->
+            <div class="competitor-intel">
+                <div class="competitor-header">
+                    <h2 class="competitor-title">Competitor Activity</h2>
+                    <button class="btn btn-outline btn-sm">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="competitor-list">
+                    <div class="competitor-item">
+                        <img src="https://logo.clearbit.com/facebook.com" class="competitor-logo">
+                        <p>Facebook</p>
+                        <small>3 offers</small>
+                    </div>
+                    <div class="competitor-item">
+                        <img src="https://logo.clearbit.com/apple.com" class="competitor-logo">
+                        <p>Apple</p>
+                        <small>5 offers</small>
+                    </div>
+                    <div class="competitor-item">
+                        <img src="https://logo.clearbit.com/tesla.com" class="competitor-logo">
+                        <p>Tesla</p>
+                        <small>2 offers</small>
+                    </div>
+                    <div class="competitor-item">
+                        <img src="https://logo.clearbit.com/spacex.com" class="competitor-logo">
+                        <p>SpaceX</p>
+                        <small>4 offers</small>
+                    </div>
+                    <div class="competitor-item">
+                        <img src="https://logo.clearbit.com/netflix.com" class="competitor-logo">
+                        <p>Netflix</p>
+                        <small>1 offer</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TALENT AUCTION MODE -->
+            <div class="auction-mode">
+                <div class="auction-header">
+                    <h2 class="auction-title">Talent Auction</h2>
+                    <div class="auction-timer">
+                        <i class="fas fa-clock" style="color: var(--accent);"></i>
+                        <span class="timer">02:15:33</span>
+                    </div>
+                </div>
+                
+                <div class="auction-candidates">
+                    <div class="auction-card">
+                        <div class="auction-card-header">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="auction-avatar">
+                            <div>
+                                <h4>Emily Zhang</h4>
+                                <small>AI Research Lead</small>
+                            </div>
+                        </div>
+                        
+                        <div class="current-bid">$320K</div>
+                        <p>Google: $320K (2 min ago)</p>
+                        
+                        <div class="bid-input">
+                            <input type="text" placeholder="Your bid...">
+                            <button class="bid-btn">Bid</button>
+                        </div>
+                    </div>
+                    
+                    <div class="auction-card">
+                        <div class="auction-card-header">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" class="auction-avatar">
+                            <div>
+                                <h4>David Park</h4>
+                                <small>Blockchain Architect</small>
+                            </div>
+                        </div>
+                        
+                        <div class="current-bid">$280K</div>
+                        <p>Coinbase: $280K (5 min ago)</p>
+                        
+                        <div class="bid-input">
+                            <input type="text" placeholder="Your bid...">
+                            <button class="bid-btn">Bid</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 3D HOLOGRAPHIC VIEWER -->
+    <div class="holographic-viewer" id="holographicViewer">
+        <div class="holographic-container">
+            <span class="holographic-close" onclick="closeHolographicView()">
+                <i class="fas fa-times"></i>
+            </span>
+            <canvas id="holographic-canvas"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        // 3D HOLOGRAPHIC VIEWER
+        function openHolographicView() {
+            document.getElementById('holographicViewer').style.display = 'flex';
+            init3DViewer();
+        }
+        
+        function closeHolographicView() {
+            document.getElementById('holographicViewer').style.display = 'none';
+        }
+        
+        function init3DViewer() {
+            const canvas = document.getElementById('holographic-canvas');
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // Add a glowing golden sphere (representing candidate)
+            const geometry = new THREE.SphereGeometry(1, 32, 32);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0xd4af37,
+                emissive: 0xd4af37,
+                emissiveIntensity: 0.5,
+                shininess: 100
+            });
+            const sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                sphere.rotation.x += 0.01;
+                sphere.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            });
+        }
+        
+        // CONFETTI EFFECT FOR OFFERS
+        function fireConfetti() {
+            const confettiSettings = {
+                target: 'confetti-canvas',
+                max: 150,
+                size: 1.5,
+                animate: true,
+                props: ['circle', 'square', 'triangle', 'line'],
+                colors: [[217, 158, 0], [255, 193, 7], [255, 202, 40]],
+                clock: 25,
+                rotate: true,
+                start_from_edge: true,
+                respawn: true
+            };
+            
+            const confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
+            
+            setTimeout(() => {
+                confetti.clear();
+            }, 5000);
+        }
+        
+        // SIMULATE BIDDING
+        document.querySelectorAll('.bid-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                fireConfetti();
+                btn.textContent = "Bid Sent!";
+                btn.style.background = "#2ecc71";
+                setTimeout(() => {
+                    btn.textContent = "Bid";
+                    btn.style.background = "var(--accent)";
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
