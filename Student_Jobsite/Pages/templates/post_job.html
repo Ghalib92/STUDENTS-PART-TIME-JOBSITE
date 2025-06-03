@@ -1,11 +1,35 @@
 {% extends 'Employer/base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Post a Job</h2>
-    <form method="POST">
+<div class="form-container">
+    <h2 class="form-title">Post a New Job</h2>
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Post Job</button>
+        
+        <div class="form-group">
+            <label class="form-label">{{ form.title.label }}</label>
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">{{ form.description.label }}</label>
+            {{ form.description }}
+            {{ form.description.errors }}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">{{ form.requirements.label }}</label>
+            {{ form.requirements }}
+            {{ form.requirements.errors }}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">{{ form.location.label }}</label>
+            {{ form.location }}
+            {{ form.location.errors }}
+        </div>
+        
+        <button type="submit" class="form-btn">Post Job</button>
     </form>
 </div>
 {% endblock %}

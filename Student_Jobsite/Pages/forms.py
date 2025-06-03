@@ -48,8 +48,18 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = Job
         fields = ['title', 'description', 'requirements', 'location']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'requirements': forms.Textarea(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 class JobApplicationForm(forms.ModelForm):
     class Meta:
         model = JobApplication
         fields = ['cover_letter', 'resume']
+        widgets = {
+            'cover_letter': forms.Textarea(attrs={'class': 'form-control'}),
+            'resume': forms.FileInput(attrs={'class': 'form-control-file'}),
+        }
