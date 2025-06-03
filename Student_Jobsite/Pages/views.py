@@ -43,7 +43,7 @@ def login_view(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('login') 
+    return redirect('home') 
 
 
 def employer_dashboard(request):
