@@ -63,6 +63,16 @@
             <div class="auth-header">
                 <h2>Login</h2>
                 <p>Please enter your credentials</p>
+                    
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert success-message">
+      <i class="fas fa-check-circle me-2"></i> {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
             </div>
             <form method="post">
                 {% csrf_token %}
