@@ -1,5 +1,87 @@
 {% extends 'staff/base.html' %}
+
 {% block content %}
+<style>
+    .container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h2 {
+        font-size: 26px;
+        font-weight: bold;
+        color: #2c2c2c;
+        margin-bottom: 25px;
+        border-left: 5px solid #d4af37;
+        padding-left: 15px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+        background-color: #fdfdfd;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="file"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #d4af37;
+        outline: none;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .btn-success {
+        background-color: #2ecc71;
+        color: #fff;
+        border: none;
+        padding: 10px 18px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #27ae60;
+    }
+
+    .form-errors {
+        color: #d9534f;
+        font-size: 14px;
+        margin-top: -10px;
+    }
+</style>
+
 <div class="container mt-4">
     <h2>Apply to: {{ job.title }}</h2>
     <form method="POST" enctype="multipart/form-data">
