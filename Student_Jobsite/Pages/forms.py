@@ -36,3 +36,20 @@ class SignUpForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control custom-input'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control custom-input'}))
+
+
+#job addition and viewing forms
+
+# forms.py
+from django import forms
+from .models import Job, JobApplication
+
+class JobForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['title', 'description', 'requirements', 'location']
+
+class JobApplicationForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        fields = ['cover_letter', 'resume']

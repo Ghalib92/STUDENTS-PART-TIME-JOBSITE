@@ -51,3 +51,79 @@ def employer_dashboard(request):
 
 def employee_dashboard(request):
     return render(request, 'employee_dashboard.html')
+
+
+
+#job addition and viewing views
+
+# views.py
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Job, JobApplication
+from .forms import JobForm, JobApplicationForm
+
+@login_required
+def post_job(request):
+    if request.method == 'POST':
+        form = JobForm(request.POST)
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.employer = request.user
+            job.save()
+            return redirect('my_jobs')
+    else:
+        form = JobForm()
+    return render(request, 'post_job.html', {'form': form})
+
+
+@login_required
+def my_jobs(request):
+    jobs = Job.objects.filter(employer=request.user)
+    return render(request, 'my_jobs.html', {'jobs': jobs})
+
+
+
+@login_required
+def job_applications(request, job_id):
+    job = get_object_or_404(Job, id=job_id, employer=request.user)
+    applications = JobApplication.objects.filter(job=job)
+    return render(request, 'applications.html', {'applications': applications, 'job': job})
+
+
+
+@login_required
+def update_application_status(request, application_id, status):
+    application = get_object_or_404(JobApplication, id=application_id, job__employer=request.user)
+    if status in ['approved', 'rejected']:
+        application.status = status
+        application.save()
+    return redirect('job_applications', job_id=application.job.id)
+
+
+@login_required
+def available_jobs(request):
+    jobs = Job.objects.all()
+    return render(request, 'job_list.html', {'jobs': jobs})
+
+
+@login_required
+def apply_to_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    if request.method == 'POST':
+        form = JobApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            app = form.save(commit=False)
+            app.job = job
+            app.applicant = request.user
+            app.save()
+            return redirect('my_applications')
+    else:
+        form = JobApplicationForm()
+    return render(request, 'apply.html', {'form': form, 'job': job})
+
+
+@login_required
+def my_applications(request):
+    applications = JobApplication.objects.filter(applicant=request.user)
+    return render(request, 'my_applications.html', {'applications': applications})
+

@@ -1,0 +1,28 @@
+ {% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>My Applications</h2>
+    {% if applications %}
+        <ul class="list-group">
+            {% for app in applications %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ app.job.title }}</strong><br>
+                    Status: 
+                    {% if app.status == 'approved' %}
+                        <span class="badge bg-success">Approved</span>
+                    {% elif app.status == 'rejected' %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Pending</span>
+                    {% endif %}
+                </div>
+                <small>Submitted: {{ app.submitted_at|date:"M d, Y" }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven’t applied to any jobs yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
