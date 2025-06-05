@@ -12,12 +12,14 @@ urlpatterns = [
     path('post-job/', views.post_job, name='post_job'),
     path('my-jobs/', views.my_jobs, name='my_jobs'),
     path('applications/<int:job_id>/', views.job_applications, name='job_applications'),
-    path(' application-status/<int:application_id>/<str:status>/', views.update_application_status, name='update_application_status'),
+    path('application-status/<int:application_id>/<str:status>/', views.update_application_status, name='update_application_status'),
+    path('application-send-email/<int:application_id>/', views.send_application_email, name='send_application_email'),
 
 # Job Seeker
     path('jobs/', views.available_jobs, name='available_jobs'),
     path('jobs/apply/<int:job_id>/', views.apply_to_job, name='apply_to_job'),
     path('applications/', views.my_applications, name='my_applications'),
+
 
 
 ]

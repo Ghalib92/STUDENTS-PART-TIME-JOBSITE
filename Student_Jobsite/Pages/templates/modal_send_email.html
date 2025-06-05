@@ -1,0 +1,61 @@
+{% extends 'Employer/base.html' %}
+{% load static %}
+{% block title %}Send Email{% endblock %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<main>
+<div class="container mt-5">
+  <h4>
+    {% if status == "approved" %}
+      Send Congratulations Email
+    {% else %}
+      Send Rejection Email
+    {% endif %}
+  </h4>
+
+  <form id="emailForm">
+    {% csrf_token %}
+    <input type="hidden" name="subject" value="{% if status == 'approved' %}Congratulations, You Got the Job!{% else %}Job Application Status Update{% endif %}">
+    <div class="mb-3">
+      <label for="message" class="form-label">Add custom message:</label>
+      <textarea class="form-control" name="message" id="message" rows="6" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Email</button>
+  </form>
+</div>
+</main>
+
+<script>
+document.getElementById('emailForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+
+    fetch("{% url 'send_application_email' application.id %}", {
+        method: "POST",
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(new FormData(form))
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Email Sent',
+                text: 'The email has been successfully sent.',
+                confirmButtonText: 'Back to Applications'
+            }).then(() => {
+                window.location.href = "{% url 'job_applications' application.job.id %}";
+            });
+        } else {
+            Swal.fire('Error', data.error || 'Failed to send email', 'error');
+        }
+    });
+});
+</script>
+
+{% endblock %}

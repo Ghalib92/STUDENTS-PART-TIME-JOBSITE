@@ -91,15 +91,46 @@ def job_applications(request, job_id):
 
 
 
+# views.py
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.http import JsonResponse
+
 @login_required
 def update_application_status(request, application_id, status):
     application = get_object_or_404(JobApplication, id=application_id, job__employer=request.user)
     if status in ['approved', 'rejected']:
         application.status = status
         application.save()
+        return render(request, 'modal_send_email.html', {
+            'application': application,
+            'status': status,
+        })
     return redirect('job_applications', job_id=application.job.id)
 
 
+
+from django.conf import settings
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import JobApplication
+
+login_required
+def send_application_email(request, application_id):
+    if request.method == 'POST':
+        application = get_object_or_404(JobApplication, id=application_id, job__employer=request.user)
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        to_email = application.email or application.applicant.email
+        from_email = settings.EMAIL_HOST_USER
+
+        try:
+            send_mail(subject, message, from_email, [to_email], fail_silently=False)
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
 @login_required
 def available_jobs(request):
     jobs = Job.objects.all()
