@@ -47,10 +47,11 @@ from .models import Job, JobApplication
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['title', 'description', 'requirements', 'location']
+        fields = ['title', 'description', 'requirements','amount','location']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
+             'amount': forms.TextInput(attrs={'class': 'form-control'}),
             'requirements': forms.Textarea(attrs={'class': 'form-control'}),
             'location': forms.TextInput(attrs={'class': 'form-control'}),
         }

@@ -21,6 +21,7 @@ class Job(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     requirements = models.TextField()
+    amount = models.CharField(null=True, blank=True)
     location = models.CharField(max_length=100)
     employer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
