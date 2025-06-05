@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELEVATE | The World's Most Exclusive Hiring Platform</title>
+    <title>AlphaStudios | The World's Most Exclusive Hiring Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -789,15 +789,8 @@
     <!-- Header -->
     <header id="header">
         <div class="container header-container">
-            <a href="#" class="logo"><i class="fas fa-crown"></i> ELEVATE</a>
-            <nav>
-                <ul>
-                    <li><a href="#">For Candidates</a></li>
-                    <li><a href="#">For Employers</a></li>
-                    <li><a href="#">Industries</a></li>
-                    <li><a href="#">Success Stories</a></li>
-                    <li><a href="#">About</a></li>
-                </ul>
+            <a href="{% url 'home' %}" class="logo"><i class="fas fa-crown"></i> AlphaStudios </a>
+            
             </nav>
             <div class="header-actions">
               <div class="mt-auto d-flex flex-wrap gap-3">
@@ -815,10 +808,10 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="serif">Where <span class="text-accent">Exceptional</span> Talent Meets <span class="text-accent">Extraordinary</span> Opportunity</h1>
-                <p>ELEVATE is the world's most exclusive platform connecting top-tier professionals with elite employers. Our proprietary matching algorithm and personalized approach ensure perfect fits for both candidates and companies.</p>
+                <p> Alpha AlphaStudios is the world's most exclusive platform connecting top-tier professionals with elite employers. Our proprietary matching algorithm and personalized approach ensure perfect fits for both candidates and companies.</p>
                 <div class="hero-btns">
-                    <a href="#" class="btn btn-solid">Find Your Dream Job</a>
-                    <a href="#" class="btn btn-outline">Hire Top Talent</a>
+                    <a href="{% url 'login' %}" class="btn btn-solid">Find Your Dream Job</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline">Hire Top Talent</a>
                 </div>
             </div>
         </div>
@@ -836,7 +829,7 @@
                     <div class="stat-text">Placement Success Rate</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">$250K</div>
+                    <div class="stat-number">Ksh.50k</div>
                     <div class="stat-text">Average Salary</div>
                 </div>
                 <div class="stat-item">
@@ -851,138 +844,73 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="serif">Unparalleled Service, Unmatched Results</h2>
-                <p>We go beyond traditional recruitment to deliver a truly bespoke experience for both candidates and employers.</p>
+    
+  <!-- How It Works -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="serif">How It Works</h2>
+            <p>A simple, transparent process for job seekers and employers.</p>
+        </div>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Find a Job You Like</h3>
+                    <p>Browse available job listings and choose the ones that match your skills and interests.</p>
+                </div>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-fingerprint"></i>
-                    </div>
-                    <h3>Exclusive Network</h3>
-                    <p>Gain access to our curated network of top 1% professionals and elite employers not found on conventional platforms.</p>
-                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Submit Your Application</h3>
+                    <p>Apply easily by submitting your cover letter and resume through our platform.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3>AI Matching</h3>
-                    <p>Our proprietary algorithm analyzes hundreds of data points to make perfect matches with 92% accuracy.</p>
-                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Employer Reviews Application</h3>
+                    <p>The employer reviews your application and decides whether to approve or reject it.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h3>Career Strategy</h3>
-                    <p>Each candidate receives a dedicated career strategist to help navigate their professional journey.</p>
-                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3>Discretion Guaranteed</h3>
-                    <p>Your search remains completely confidential until you're ready to make a move.</p>
-                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Market Intelligence</h3>
-                    <p>Receive exclusive insights on compensation trends, talent availability, and competitive positioning.</p>
-                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-gem"></i>
-                    </div>
-                    <h3>White Glove Service</h3>
-                    <p>From initial contact to final offer, every detail is handled with the utmost care and professionalism.</p>
-                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Get Notified</h3>
+                    <p>You receive an email notification informing you about the employer's decision.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- How It Works -->
-    <section class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="serif">The ELEVATE Process</h2>
-                <p>Our meticulous approach ensures the perfect match every time.</p>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Curated Selection</h3>
-                        <p>Our team of expert recruiters personally evaluates every candidate and employer to ensure they meet our exacting standards.</p>
-                    </div>
+<!-- Testimonials -->
+<section class="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="serif">Success Stories</h2>
+            <p>Don't just take our word for it. Here's what our clients say.</p>
+        </div>
+        <div class="testimonial-slider">
+            <div class="testimonial">
+                <div class="testimonial-content">
+                   "Thanks to AlphaStudios, I found a job that truly fits me. The process was easy, and I felt supported every step of the way. I’m grateful for the opportunity and the care they showed throughout."
                 </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Deep Discovery</h3>
-                        <p>We conduct comprehensive interviews and assessments to understand the unique needs, aspirations, and culture fit.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Strategic Matching</h3>
-                        <p>Using our proprietary algorithm and human expertise, we identify the ideal opportunities and candidates.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Seamless Execution</h3>
-                        <p>We manage the entire process from initial introduction to final negotiation, ensuring a smooth experience.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">5</div>
-                    <div class="step-content">
-                        <h3>Ongoing Support</h3>
-                        <p>Our relationship doesn't end with placement. We provide continued support to ensure long-term success.</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                         <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&q=80" alt="Sarah Anyango" style="border-radius: 50%;">
+                       </div>
+                    <div class="author-info">
+                        <h4>Sarah Whites</h4>
+                        <p>Happy Job Seeker</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="serif">Success Stories</h2>
-                <p>Don't just take our word for it. Here's what our clients say.</p>
-            </div>
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        ELEVATE completely transformed our executive team. Within 6 months of working with them, we placed three C-level executives who have been instrumental in our company's recent growth. The quality of candidates was unlike anything we'd seen from other firms.
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sarah Johnson">
-                        </div>
-                        <div class="author-info">
-                            <h4>Sarah Johnson</h4>
-                            <p>CEO, TechForward Inc.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- CTA Section -->
     <section class="cta">
@@ -993,8 +921,8 @@
                 <h2 class="serif">Ready to Elevate Your Career or Team?</h2>
                 <p>Join the most exclusive professional network in the world. Limited membership available.</p>
                 <div class="cta-btns">
-                    <a href="#" class="btn btn-solid">Apply as Candidate</a>
-                    <a href="#" class="btn btn-outline">Request Employer Access</a>
+                    <a href="{% url 'signup' %}" class="btn btn-solid">Apply as Candidate</a>
+                    <a href="{% url 'signup' %}" class="btn btn-outline">Request Employer Access</a>
                 </div>
             </div>
         </div>
@@ -1005,7 +933,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col footer-about">
-                    <a href="#" class="logo"><i class="fas fa-crown"></i> ELEVATE</a>
+                    <a href="#" class="logo"><i class="fas fa-crown"></i> AlphaStudios</a>
                     <p>The world's most exclusive hiring platform connecting exceptional talent with extraordinary opportunities.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
@@ -1046,7 +974,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <div class="copyright">© 2023 ELEVATE. All rights reserved.</div>
+                <div class="copyright">© 2023 AlphaStudios. All rights reserved.</div>
                 <div class="footer-links">
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
