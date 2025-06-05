@@ -5,57 +5,57 @@
     .container {
         max-width: 900px;
         margin: 40px auto;
-        background-color: #ffffff;
+        background-color: var(--secondary);
         padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         font-family: 'Segoe UI', sans-serif;
+        color: var(--text);
     }
 
     h2 {
-        font-size: 26px;
-        margin-bottom: 25px;
+        font-size: 28px;
         font-weight: bold;
-        color: #333;
-        border-left: 6px solid #d4af37;
+        margin-bottom: 25px;
+        color: var(--accent);
+        border-left: 6px solid var(--accent);
         padding-left: 15px;
     }
 
     .list-group {
         list-style: none;
-        padding-left: 0;
+        padding: 0;
     }
 
     .list-group-item {
-        background: #fdfdfd;
-        border: 1px solid #e4e4e4;
-        color: #c82333;
-        border-radius: 10px;
+        background: var(--primary);
+        border: 1px solid var(--accent-glow);
+        border-radius: 12px;
         padding: 20px;
         margin-bottom: 20px;
+        color: var(--danger);
         transition: box-shadow 0.3s ease;
     }
 
     .list-group-item:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
     }
 
     strong {
         font-size: 16px;
-        color: #222;
+        color: var(--text);
     }
 
     p {
-        margin-top: 10px;
-        margin-bottom: 12px;
         font-size: 15px;
-        color: #444;
-        line-height: 1.5;
+        color: var(--text-dim);
+        margin: 12px 0;
+        line-height: 1.6;
     }
 
     a[target="_blank"] {
         font-size: 14px;
-        color: #007bff;
+        color: var(--accent);
         text-decoration: underline;
         margin-bottom: 10px;
         display: inline-block;
@@ -64,42 +64,37 @@
     .btn {
         padding: 6px 14px;
         font-size: 13px;
-        border-radius: 5px;
+        border-radius: 6px;
         text-decoration: none;
         margin-right: 10px;
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .btn-success {
-        background-color: #28a745;
+        background-color: var(--success);
         color: white;
         border: none;
     }
 
     .btn-success:hover {
-        background-color: #218838;
+        background-color: #27ae60;
     }
 
     .btn-danger {
-        background-color: #dc3545;
+        background-color: var(--danger);
         color: white;
         border: none;
     }
 
     .btn-danger:hover {
-        background-color: #c82333;
-    }
-
-    .mt-2 {
-        margin-top: 15px;
+        background-color: #e01f48;
     }
 
     .no-apps {
         font-size: 16px;
-        color: #777;
+        color: var(--text-dim);
     }
 </style>
-
 
 {% if messages %}
   {% for message in messages %}
@@ -109,9 +104,6 @@
     </div>
   {% endfor %}
 {% endif %}
-
-
-
 
 <div class="container mt-4">
     <h2>Applications for "{{ job.title }}"</h2>

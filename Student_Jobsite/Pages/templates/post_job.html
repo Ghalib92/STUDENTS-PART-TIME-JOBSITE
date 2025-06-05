@@ -1,5 +1,90 @@
 {% extends 'Employer/base.html' %}
 {% block content %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        color: #333;
+        border-left: 6px solid #d4af37;
+        padding-left: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #333;
+        background-color: #fdfdfd;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #d4af37;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
+    .form-btn {
+        background-color: #d4af37;
+        color: white;
+        font-weight: bold;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .form-btn:hover {
+        background-color: #b9922c;
+        transform: translateY(-2px);
+    }
+
+    .form-btn:active {
+        transform: translateY(1px);
+    }
+
+    .errorlist {
+        color: #c82333;
+        font-size: 14px;
+        margin-top: 5px;
+        list-style-type: none;
+        padding-left: 0;
+    }
+</style>
+
 <div class="form-container">
     <h2 class="form-title">Post a New Job</h2>
     <form method="post" enctype="multipart/form-data">
@@ -16,10 +101,13 @@
             {{ form.description }}
             {{ form.description.errors }}
         </div>
+        
         <div class="form-group">
             <label class="form-label">{{ form.amount.label }}</label>
             {{ form.amount }}
             {{ form.amount.errors }}
+        </div>
+
         <div class="form-group">
             <label class="form-label">{{ form.requirements.label }}</label>
             {{ form.requirements }}
@@ -35,4 +123,5 @@
         <button type="submit" class="form-btn">Post Job</button>
     </form>
 </div>
+
 {% endblock %}

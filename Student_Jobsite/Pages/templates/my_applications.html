@@ -2,97 +2,100 @@
 
 {% block content %}
 <style>
-    .container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 30px;
+    .application-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 30px 0;
+    }
+
+    .application-card {
         background-color: #ffffff;
         border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    h2 {
-        font-size: 26px;
-        font-weight: bold;
-        color: #2c2c2c;
-        margin-bottom: 25px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        padding: 20px 25px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         border-left: 5px solid #d4af37;
-        padding-left: 15px;
     }
 
-    .list-group-item {
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    .application-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
     }
 
-    .list-group-item strong {
-        font-size: 18px;
-        color: #333;
+    .application-card h4 {
+        margin-bottom: 8px;
+        font-size: 20px;
+        color: #2c2c2c;
     }
 
-    .badge {
-        padding: 5px 10px;
+    .application-card .status {
+        margin-bottom: 10px;
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
         font-size: 14px;
-        border-radius: 5px;
         font-weight: 500;
     }
 
-    .bg-success {
-        background-color: #2ecc71 !important;
+    .status.approved {
+        background-color: #2ecc71;
         color: white;
     }
 
-    .bg-danger {
-        background-color: #e74c3c !important;
+    .status.rejected {
+        background-color: #e74c3c;
         color: white;
     }
 
-    .bg-secondary {
-        background-color: #7f8c8d !important;
+    .status.pending {
+        background-color: #7f8c8d;
         color: white;
     }
 
-    small {
-        color: #888;
+    .application-card small {
         font-size: 13px;
+        color: #888;
     }
 
-    p {
+    .application-section-title {
+        font-size: 26px;
+        font-weight: bold;
+        color: #2c2c2c;
+        border-left: 5px solid #d4af37;
+        padding-left: 15px;
+        margin-bottom: 25px;
+    }
+
+    .no-applications {
         font-size: 16px;
         color: #555;
+        padding: 20px 0;
     }
 </style>
 
 <div class="container mt-4">
-    <h2>My Applications</h2>
+    <h2 class="application-section-title">My Applications</h2>
     {% if applications %}
-        <ul class="list-group">
-            {% for app in applications %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>{{ app.job.title }}</strong><br>
-                    Status: 
-                    {% if app.status == 'approved' %}
-                        <span class="badge bg-success">Approved</span>
-                    {% elif app.status == 'rejected' %}
-                        <span class="badge bg-danger">Rejected</span>
-                    {% else %}
-                        <span class="badge bg-secondary">Pending</span>
-                    {% endif %}
-                </div>
-                <small>Submitted: {{ app.submitted_at|date:"M d, Y" }}</small>
-            </li>
-            {% endfor %}
-        </ul>
+    <div class="application-grid">
+        {% for app in applications %}
+        <div class="application-card">
+            <h4>{{ app.job.title }}</h4>
+            {% if app.status == 'approved' %}
+                <span class="status approved">Approved</span>
+            {% elif app.status == 'rejected' %}
+                <span class="status rejected">Rejected</span>
+            {% else %}
+                <span class="status pending">Pending</span>
+            {% endif %}
+            <br>
+            <small>Submitted: {{ app.submitted_at|date:"M d, Y" }}</small>
+        </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p>You haven’t applied to any jobs yet.</p>
+    <p class="no-applications">You haven’t applied to any jobs yet.</p>
     {% endif %}
 </div>
+
 {% endblock %}
