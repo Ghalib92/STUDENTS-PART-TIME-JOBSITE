@@ -25,8 +25,18 @@ AUTH_USER_MODEL = 'Pages.CustomUser'
 SECRET_KEY = 'django-insecure-4=!sfnnift(a7vzy&+qa9sbm5&5t93lv8q46^0*p__t6&5#!c)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://student-jobsite.fly.dev",  # your live Fly.io app domain
+]
+
+
 DEBUG = False
-ALLOWED_HOSTS = ['.fly.dev']
+ALLOWED_HOSTS = [
+    'student-jobsite.fly.dev',  # or your actual domain
+    'localhost',  # optional for local dev
+]
 
 
 
