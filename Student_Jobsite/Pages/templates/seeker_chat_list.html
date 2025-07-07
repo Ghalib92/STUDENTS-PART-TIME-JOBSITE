@@ -1,0 +1,42 @@
+ {% extends 'Staff/base.html' %}
+{% load static %}
+{% load chat_extras %}
+
+{% block title %}Approvals{% endblock %}
+
+{% block content %}
+<h2>Chats</h2>
+<ul>
+  {% for thread in threads %}
+    {% if user == thread.employer %}
+      {% with thread.jobseeker as other_user %}
+        <li>
+          <a href="{% url 'chat_room' thread.id %}">
+            {{ other_user.username }}
+            {% with unread_count=unread_messages|get_item:other_user.id %}
+              {% if unread_count %}
+                <span class="badge">{{ unread_count }}</span>
+              {% endif %}
+            {% endwith %}
+          </a>
+        </li>
+      {% endwith %}
+    {% else %}
+      {% with thread.employer as other_user %}
+        <li>
+          <a href="{% url 'chat_room' thread.id %}">
+            {{ other_user.username }}
+            {% with unread_count=unread_messages|get_item:other_user.id %}
+              {% if unread_count %}
+                <span class="badge">{{ unread_count }}</span>
+              {% endif %}
+            {% endwith %}
+          </a>
+        </li>
+      {% endwith %}
+    {% endif %}
+  {% empty %}
+    <li>No chats available.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

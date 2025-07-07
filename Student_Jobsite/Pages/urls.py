@@ -20,6 +20,10 @@ urlpatterns = [
     path('jobs/apply/<int:job_id>/', views.apply_to_job, name='apply_to_job'),
     path('applications/', views.my_applications, name='my_applications'),
 
+# Chat
+    path('chat/', views.chat_list, name='chat_list'),
+    path('room/<int:thread_id>/', views.chat_room, name='chat_room'),
+
 
 
 ]

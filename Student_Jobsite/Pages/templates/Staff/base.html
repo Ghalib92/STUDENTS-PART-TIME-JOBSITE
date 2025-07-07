@@ -571,6 +571,14 @@
                     <i class="fas fa-users-cog"></i>
                     <span>Applications</span>
                 </a>
+                <a href="{% url 'chat_list' %}" class="nav-link">
+                    <span>💬 Chat </span>
+                    {% if unread_messages %}
+                        <span class="badge">{{ unread_messages|length }}</span>
+                    {% endif %}
+                </a>
+
+
             </nav>
         </div>
 
@@ -585,7 +593,7 @@
                     </a>
                 </div>
             </div>
-            
+            <h1>Welcome <span>{{ user.username }}</span></h1>
             <main>
                 {% block content %}
                 <!-- Content will be injected here -->

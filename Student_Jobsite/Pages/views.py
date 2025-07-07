@@ -95,20 +95,31 @@ def job_applications(request, job_id):
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.http import JsonResponse
+from .models import Thread
+
 
 @login_required
 def update_application_status(request, application_id, status):
     application = get_object_or_404(JobApplication, id=application_id, job__employer=request.user)
+
     if status in ['approved', 'rejected']:
         application.status = status
         application.save()
+
+        # Create a thread if approved and not already created
+        if status == 'approved':
+            Thread.objects.get_or_create(
+                employer=request.user,
+                jobseeker=application.applicant,
+                job=application.job
+            )
+
         return render(request, 'modal_send_email.html', {
             'application': application,
             'status': status,
         })
+
     return redirect('job_applications', job_id=application.job.id)
-
-
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -157,4 +168,50 @@ def apply_to_job(request, job_id):
 def my_applications(request):
     applications = JobApplication.objects.filter(applicant=request.user)
     return render(request, 'my_applications.html', {'applications': applications})
+
+
+#chat implementation
+# chat/views.py
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Thread, Message
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def chat_list(request):
+    user = request.user
+    if user.role == 'employer':
+        threads = Thread.objects.filter(employer=user)
+        return render(request, 'employer_chat_list.html', {'threads': threads})
+        
+    else:
+        threads = Thread.objects.filter(jobseeker=user)
+        return render(request, 'seeker_chat_list.html', {'threads': threads})
+
+def chat_room(request, thread_id):
+    user = request.user
+    thread = get_object_or_404(Thread, id=thread_id)
+    if request.user == thread.employer:
+        other_user = thread.jobseeker
+    else:
+        other_user = thread.employer
+
+    messages = Message.objects.filter(thread=thread)
+
+
+
+    if user.role == 'employer':
+        return render(request, 'employer_chat_room.html', {
+        'thread': thread,
+        'messages': messages,
+        'other_user': other_user,
+    })
+    elif user.role == 'jobseeker':
+        return render(request, 'staff_chat_room.html', {
+        'thread': thread,
+        'messages': messages,
+        'other_user': other_user,
+    })
+       
+
+
 

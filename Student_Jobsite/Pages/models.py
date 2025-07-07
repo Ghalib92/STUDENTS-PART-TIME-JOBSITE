@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
+from django.utils import timezone
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
@@ -43,3 +45,23 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.applicant} -> {self.job.title}"
+
+
+class Thread(models.Model):
+    employer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='employer_threads')
+    jobseeker = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='jobseeker_threads')
+    job = models.ForeignKey('Job', on_delete=models.CASCADE)  # To know which job this chat is about
+
+    def __str__(self):
+        return f"Chat: {self.employer.username} & {self.jobseeker.username} - {self.job.title}"
+
+class Message(models.Model):
+    thread = models.ForeignKey(Thread, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"From {self.sender.username}: {self.content[:30]}"
+

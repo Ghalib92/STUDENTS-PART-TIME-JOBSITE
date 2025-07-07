@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
+ 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +24,7 @@ AUTH_USER_MODEL = 'Pages.CustomUser'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-4=!sfnnift(a7vzy&+qa9sbm5&5t93lv8q46^0*p__t6&5#!c)'
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
@@ -32,11 +33,10 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-DEBUG = False
-ALLOWED_HOSTS = [
-    'student-jobsite.fly.dev',  # or your actual domain
-    'localhost',  # optional for local dev
-]
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+
 
 
 
@@ -87,6 +87,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'Pages.context_processors.unread_message_count',
             ],
         },
     },
@@ -98,14 +99,23 @@ WSGI_APPLICATION = 'Student_Jobsite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.environ.get("DATABASE_URL"),
+#         conn_max_age=600,
+#         ssl_require=False
+#     )
+# }
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=False
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'job_site',
+        'USER': 'postgres',
+        'PASSWORD':'1234',
+        'HOST':'localhost',
+        'PORT': '5432',   
+     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
