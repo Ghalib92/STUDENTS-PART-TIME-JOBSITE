@@ -190,28 +190,37 @@ def chat_list(request):
 def chat_room(request, thread_id):
     user = request.user
     thread = get_object_or_404(Thread, id=thread_id)
-    if request.user == thread.employer:
+
+    # Determine other user
+    if user == thread.employer:
         other_user = thread.jobseeker
     else:
         other_user = thread.employer
 
+    # Handle message sending
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Message.objects.create(
+                thread=thread,
+                sender=user,
+                content=content
+            )
+            return redirect('chat_room', thread_id=thread.id)
+
+    # Load messages
     messages = Message.objects.filter(thread=thread)
 
-
-
+    # Render based on role
     if user.role == 'employer':
         return render(request, 'employer_chat_room.html', {
-        'thread': thread,
-        'messages': messages,
-        'other_user': other_user,
-    })
+            'thread': thread,
+            'messages': messages,
+            'other_user': other_user,
+        })
     elif user.role == 'jobseeker':
         return render(request, 'staff_chat_room.html', {
-        'thread': thread,
-        'messages': messages,
-        'other_user': other_user,
-    })
-       
-
-
-
+            'thread': thread,
+            'messages': messages,
+            'other_user': other_user,
+        })

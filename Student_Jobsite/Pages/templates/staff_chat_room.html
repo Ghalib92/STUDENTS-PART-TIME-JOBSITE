@@ -1,40 +1,59 @@
-{%extends 'Staff/base.html'%}
-{%load static %}
-{% block title %} Chat {%endblock%}
+{% extends 'Staff/base.html' %}
+{% load static %}
+{% block title %} Chat {% endblock %}
 
-
-<main>
 {% block content %}
-
-
-
+<style>
+  #chat-box {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+    background: #252424;
+  }
+  .message {
+    margin: 0.5rem 0;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    max-width: 60%;
+    clear: both;
+  }
+  .sent {
+    background-color: #09962a;
+    float: right;
+    text-align: right;
+  }
+  .received {
+    background-color: #790c0c;
+    float: left;
+    text-align: left;
+  }
+</style>
 
 <h2>Chat with {{ other_user.username }}</h2>
+
 {% if not messages %}
   <p>No messages yet. Start the conversation!</p>
 {% endif %}
 
 <div id="chat-box">
   {% for message in messages %}
-    <div class="{% if message.sender == user %}sent{% else %}received{% endif %}">
-      <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+    <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+      <strong>{{ message.sender.username }}</strong><br>
+      {{ message.content }}
     </div>
   {% endfor %}
 </div>
 
 <form method="post">
   {% csrf_token %}
-  <textarea name="content" required></textarea>
+  <textarea name="content" placeholder="Type your message..." required></textarea>
   <button type="submit">Send</button>
 </form>
 
 <script>
-// Auto-refresh every 5s
-setInterval(() => location.reload(), 5000);
+  const chatBox = document.getElementById('chat-box');
+  chatBox.scrollTop = chatBox.scrollHeight;
 </script>
-
-
-
-
-{%endblock%}
-</main>
+{% endblock %}
