@@ -1,6 +1,6 @@
-# Pages/templatetags/chat_extras.py
-from django import template
+# chat_extras.py
 
+from django import template
 register = template.Library()
 
 @register.filter

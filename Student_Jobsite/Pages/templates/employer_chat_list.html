@@ -1,42 +1,181 @@
- {% extends 'Employer/base.html' %}
+{% extends 'Employer/base.html' %}
 {% load static %}
 {% load chat_extras %}
 
 {% block title %}Approvals{% endblock %}
 
 {% block content %}
-<h2>Chats</h2>
-<ul>
-  {% for thread in threads %}
-    {% if user == thread.employer %}
-      {% with thread.jobseeker as other_user %}
-        <li>
-          <a href="{% url 'chat_room' thread.id %}">
-            {{ other_user.username }}
-            {% with unread_count=unread_messages|get_item:other_user.id %}
-              {% if unread_count %}
-                <span class="badge">{{ unread_count }}</span>
-              {% endif %}
-            {% endwith %}
-          </a>
-        </li>
-      {% endwith %}
-    {% else %}
-      {% with thread.employer as other_user %}
-        <li>
-          <a href="{% url 'chat_room' thread.id %}">
-            {{ other_user.username }}
-            {% with unread_count=unread_messages|get_item:other_user.id %}
-              {% if unread_count %}
-                <span class="badge">{{ unread_count }}</span>
-              {% endif %}
-            {% endwith %}
-          </a>
-        </li>
-      {% endwith %}
-    {% endif %}
-  {% empty %}
-    <li>No chats available.</li>
-  {% endfor %}
-</ul>
+<style>
+  :root {
+    --primary-dark: #121826;
+    --secondary-dark: #1F2937;
+    --accent-color: #4F46E5;
+    --accent-hover: #6366F1;
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --card-bg: #1F2937;
+    --border-color: #374151;
+    --unread-badge: #EF4444;
+  }
+
+  body {
+    background-color: var(--primary-dark);
+    color: var(--text-primary);
+  }
+
+  h2 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .chat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .chat-item {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .chat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-color);
+  }
+
+  .chat-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .chat-info {
+    flex: 1;
+  }
+
+  .username {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+
+  .job-title {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+  }
+
+  .job-title strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .badge {
+    background-color: var(--unread-badge);
+    color: white;
+    border-radius: 9999px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 1.5rem;
+    text-align: center;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px dashed var(--border-color);
+  }
+
+  /* Status indicator (optional) */
+  .status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background-color: #6EE7B7; /* online color */
+  }
+
+  .status-offline {
+    background-color: var(--text-secondary);
+  }
+</style>
+
+<div class="container">
+  <h2>Your Chats</h2>
+  
+  <ul class="chat-list">
+    {% for thread in threads %}
+      {% if user == thread.employer %}
+        {% with thread.jobseeker as other_user %}
+          <li class="chat-item">
+            <a href="{% url 'chat_room' thread.id %}" class="chat-link">
+              <div class="chat-info">
+                <span class="username">
+                  <!-- Optional status indicator -->
+                  <!-- <span class="status-indicator"></span> -->
+                  {{ other_user.username }}
+                </span>
+                <span class="job-title">
+                  Regarding: <strong>{{ thread.job.title }}</strong>
+                </span>
+              </div>
+              {% with unread_count=unread_messages|get_item:other_user.id %}
+                {% if unread_count %}
+                  <span class="badge">{{ unread_count }}</span>
+                {% endif %}
+              {% endwith %}
+            </a>
+          </li>
+        {% endwith %}
+      {% else %}
+        {% with thread.employer as other_user %}
+          <li class="chat-item">
+            <a href="{% url 'chat_room' thread.id %}" class="chat-link">
+              <div class="chat-info">
+                <span class="username">
+                  <!-- <span class="status-indicator"></span> -->
+                  {{ other_user.username }}
+                </span>
+                <!-- Job title would go here if available -->
+              </div>
+              {% with unread_count=unread_messages|get_item:other_user.id %}
+                {% if unread_count %}
+                  <span class="badge">{{ unread_count }}</span>
+                {% endif %}
+              {% endwith %}
+            </a>
+          </li>
+        {% endwith %}
+      {% endif %}
+    {% empty %}
+      <li class="empty-state">No active chats available</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

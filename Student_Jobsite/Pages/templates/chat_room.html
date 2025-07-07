@@ -4,56 +4,198 @@
 
 {% block content %}
 <style>
+  :root {
+    --primary-dark: #121826;
+    --secondary-dark: #1F2937;
+    --accent-color: #4F46E5;
+    --accent-hover: #6366F1;
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --sent-bg: #3730A3;
+    --received-bg: #1F2937;
+    --input-bg: #1F2937;
+    --border-color: #374151;
+  }
+
+  body {
+    background-color: var(--primary-dark);
+    color: var(--text-primary);
+  }
+
+  h2 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+  }
+
   #chat-box {
-    max-height: 400px;
+    height: 65vh;
+    max-height: 65vh;
     overflow-y: auto;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    margin-bottom: 1rem;
-    background: #f9f9f9;
-  }
-  .message {
-    margin: 0.5rem 0;
-    padding: 0.6rem 1rem;
+    padding: 1.5rem;
     border-radius: 12px;
-    max-width: 60%;
+    margin-bottom: 1.5rem;
+    background: var(--secondary-dark);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--secondary-dark);
+  }
+
+  #chat-box::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #chat-box::-webkit-scrollbar-track {
+    background: var(--secondary-dark);
+  }
+
+  #chat-box::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 3px;
+  }
+
+  .message {
+    margin: 0.75rem 0;
+    padding: 0.75rem 1.25rem;
+    border-radius: 18px;
+    max-width: 70%;
     clear: both;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
   }
+
+  .message:hover {
+    transform: translateY(-2px);
+  }
+
   .sent {
-    background-color: #d4f7dc;
+    background-color: var(--sent-bg);
     float: right;
-    text-align: right;
+    color: white;
+    border-bottom-right-radius: 4px;
   }
+
   .received {
-    background-color: #eee;
+    background-color: var(--received-bg);
     float: left;
-    text-align: left;
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+  }
+
+  .message strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  form {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  textarea {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    resize: none;
+    min-height: 50px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }
+
+  button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  /* Timestamp styling */
+  .message::after {
+    content: attr(data-time);
+    position: absolute;
+    bottom: -18px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .sent::after {
+    right: 0;
+  }
+
+  .received::after {
+    left: 0;
   }
 </style>
 
 <h2>Chat with {{ other_user.username }}</h2>
 
-{% if not messages %}
-  <p>No messages yet. Start the conversation!</p>
-{% endif %}
-
 <div id="chat-box">
-  {% for message in messages %}
-    <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
-      <strong>{{ message.sender.username }}</strong><br>
-      {{ message.content }}
+  {% if not messages %}
+    <div class="empty-state">
+      <p>No messages yet. Start the conversation!</p>
     </div>
-  {% endfor %}
+  {% else %}
+    {% for message in messages %}
+      <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}" 
+           data-time="{{ message.timestamp|time:'H:i' }}">
+        <strong>{{ message.sender.username }}</strong>
+        {{ message.content }}
+      </div>
+    {% endfor %}
+  {% endif %}
 </div>
 
 <form method="post">
   {% csrf_token %}
-  <textarea name="content" placeholder="Type your message..." required></textarea>
+  <textarea name="content" placeholder="Type your message..." required rows="1"></textarea>
   <button type="submit">Send</button>
 </form>
 
 <script>
+  // Auto-scroll to bottom
   const chatBox = document.getElementById('chat-box');
   chatBox.scrollTop = chatBox.scrollHeight;
+  
+  // Auto-resize textarea
+  const textarea = document.querySelector('textarea');
+  textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
 </script>
 {% endblock %}

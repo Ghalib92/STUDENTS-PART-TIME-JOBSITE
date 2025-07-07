@@ -186,30 +186,39 @@ def chat_list(request):
     else:
         threads = Thread.objects.filter(jobseeker=user)
         return render(request, 'seeker_chat_list.html', {'threads': threads})
+# views.py
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Thread, Message
+
 
 def chat_room(request, thread_id):
     user = request.user
     thread = get_object_or_404(Thread, id=thread_id)
+    
+    # Identify the other user
+    other_user = thread.jobseeker if user == thread.employer else thread.employer
 
-    # Determine other user
-    if user == thread.employer:
-        other_user = thread.jobseeker
-    else:
-        other_user = thread.employer
-
-    # Handle message sending
+    # Handle message send
     if request.method == 'POST':
         content = request.POST.get('content')
         if content:
             Message.objects.create(
                 thread=thread,
                 sender=user,
-                content=content
+                content=content,
+                is_read=False  # Not read yet
             )
             return redirect('chat_room', thread_id=thread.id)
 
-    # Load messages
-    messages = Message.objects.filter(thread=thread)
+    # ✅ Mark all unread messages from the other user as read
+    Message.objects.filter(
+        thread=thread,
+        sender=other_user,
+        is_read=False
+    ).update(is_read=True)
+
+    messages = Message.objects.filter(thread=thread).order_by('timestamp')
 
     # Render based on role
     if user.role == 'employer':
@@ -218,7 +227,7 @@ def chat_room(request, thread_id):
             'messages': messages,
             'other_user': other_user,
         })
-    elif user.role == 'jobseeker':
+    else:
         return render(request, 'staff_chat_room.html', {
             'thread': thread,
             'messages': messages,

@@ -1,88 +1,148 @@
 {% extends 'Employer/base.html' %}
 {% block content %}
 <style>
+  :root {
+    --primary-dark: #121826;
+    --secondary-dark: #1F2937;
+    --accent-color: #d4af37;
+    --accent-hover: #e8c252;
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --card-bg: #1F2937;
+    --border-color: #374151;
+    --input-bg: #2A3748;
+    --error-color: #EF4444;
+  }
+
+  body {
+    background-color: var(--primary-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .form-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+  }
+
+  .form-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color:#E5E7EB;
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+
+  .form-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-color), #f5d67b);
+    border-radius: 2px;
+  }
+
+  .form-group {
+    margin-bottom: 1.75rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 600;
+    color: #020407;;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    background-color: var(--secondary-dark);
+  }
+
+  textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  .form-btn {
+    background: linear-gradient(135deg, var(--accent-color), #e8c252);
+    color: #1F2937;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-btn:hover {
+    background: linear-gradient(135deg, var(--accent-hover), #f5d67b);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .form-btn:active {
+    transform: translateY(1px);
+  }
+
+  .errorlist {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  /* Floating label animation (optional) */
+  .form-group {
+    position: relative;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
     .form-container {
-        max-width: 800px;
-        margin: 40px auto;
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
-        font-family: 'Segoe UI', sans-serif;
+      padding: 1.5rem;
+      margin: 20px auto;
     }
-
+    
     .form-title {
-        font-size: 26px;
-        font-weight: bold;
-        margin-bottom: 25px;
-        color: #333;
-        border-left: 6px solid #d4af37;
-        padding-left: 15px;
+      font-size: 1.5rem;
     }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-label {
-        display: block;
-        font-weight: 600;
-        color: #222;
-        margin-bottom: 8px;
-        font-size: 15px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select,
-    textarea {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 15px;
-        color: #333;
-        background-color: #fdfdfd;
-        transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #d4af37;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-    }
-
-    .form-btn {
-        background-color: #d4af37;
-        color: white;
-        font-weight: bold;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    .form-btn:hover {
-        background-color: #b9922c;
-        transform: translateY(-2px);
-    }
-
-    .form-btn:active {
-        transform: translateY(1px);
-    }
-
-    .errorlist {
-        color: #c82333;
-        font-size: 14px;
-        margin-top: 5px;
-        list-style-type: none;
-        padding-left: 0;
-    }
+  }
 </style>
 
 <div class="form-container">
@@ -124,4 +184,20 @@
     </form>
 </div>
 
+<script>
+  // Add subtle animation to form elements when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+      group.style.opacity = '0';
+      group.style.transform = 'translateY(10px)';
+      group.style.transition = `all 0.4s ease ${index * 0.1}s`;
+      
+      setTimeout(() => {
+        group.style.opacity = '1';
+        group.style.transform = 'translateY(0)';
+      }, 100);
+    });
+  });
+</script>
 {% endblock %}
