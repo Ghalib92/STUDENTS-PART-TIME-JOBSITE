@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return f"{self.username} ({self.role})"
@@ -65,4 +66,22 @@ class Message(models.Model):
 
     def __str__(self):
         return f"From {self.sender.username}: {self.content[:30]}"
+
+
+# models.py
+
+class PayRequest(models.Model):
+    job_application = models.ForeignKey(JobApplication, on_delete=models.CASCADE)
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ], default='pending')
+    requested_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.requester.username} -> {self.job_application.job.title} ({self.status})"
+
 

@@ -184,6 +184,57 @@
     </form>
 </div>
 
+
+<!-- M-Pesa Phone Number Modal -->
+<div id="mpesaModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h3>Enter M-Pesa Number</h3>
+    <input type="text" id="mpesaPhone" placeholder="e.g. 254712345678" required />
+    <button id="confirmPayment">Send STK Push</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+  const form = document.querySelector('form');
+  const modal = document.getElementById('mpesaModal');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    modal.style.display = 'block';
+  });
+
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+
+  document.getElementById('confirmPayment').addEventListener('click', function() {
+    const phone = document.getElementById('mpesaPhone').value;
+    const amount = document.querySelector('#id_amount').value;
+
+    fetch('/initiate-job-payment/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: `phone=${phone}&amount=${amount}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert('STK Push Sent');
+      modal.style.display = 'none';
+      form.submit();  // Submit job form after STK push
+    })
+    .catch(err => {
+      alert('Error initiating payment');
+      console.error(err);
+    });
+  });
+</script>
+
+
+
 <script>
   // Add subtle animation to form elements when page loads
   document.addEventListener('DOMContentLoaded', () => {

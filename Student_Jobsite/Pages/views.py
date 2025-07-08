@@ -233,3 +233,123 @@ def chat_room(request, thread_id):
             'messages': messages,
             'other_user': other_user,
         })
+
+
+
+import requests
+import base64
+from datetime import datetime
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from .models import PayRequest
+
+CONSUMER_KEY = 'X4ZJXQJpGJeGP07Ob7YIOazg5ZERCSb40DUTADBKuv4yke5X'
+CONSUMER_SECRET = 'mBLMOtyuLsNO2YK7GASCww1UAc0AUJMrjVLVn74f90ta6hpoQpCBq7vpACUWtvCx'
+SHORTCODE = '174379'
+PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
+CALLBACK_URL = 'https://example.com/callback/'  # Not used now
+
+def get_access_token():
+    url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    r = requests.get(url, auth=(CONSUMER_KEY, CONSUMER_SECRET))
+    return r.json().get('access_token')
+
+def lipa_na_mpesa(phone_number, amount):
+    access_token = get_access_token()
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    password = base64.b64encode((SHORTCODE + PASSKEY + timestamp).encode()).decode()
+
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+
+    payload = {
+        "BusinessShortCode": SHORTCODE,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": int(amount),
+        "PartyA": phone_number,
+        "PartyB": SHORTCODE,
+        "PhoneNumber": phone_number,
+        "CallBackURL": CALLBACK_URL,
+        "AccountReference": "JobPosting",
+        "TransactionDesc": "Job Posting Fee"
+    }
+
+    response = requests.post(
+        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+        json=payload,
+        headers=headers
+    )
+    return response.json()
+
+@csrf_exempt
+def initiate_job_payment(request):
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        amount = request.POST.get('amount')
+        if not phone or not amount:
+            return JsonResponse({'error': 'Missing phone or amount'}, status=400)
+        response = lipa_na_mpesa(phone, amount)
+        return JsonResponse(response)
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+
+# views.py
+ 
+@login_required
+def request_payment(request):
+    applications = JobApplication.objects.filter(applicant=request.user, status='approved')
+
+    # Get job applications for which payment is already requested
+    requested_ids = PayRequest.objects.filter(
+        requester=request.user
+    ).values_list('job_application_id', flat=True)
+
+    if request.method == 'POST':
+        application_id = request.POST.get('application_id')
+        if application_id and int(application_id) not in requested_ids:
+            application = get_object_or_404(JobApplication, id=application_id, applicant=request.user)
+            PayRequest.objects.create(
+                job_application=application,
+                requester=request.user
+            )
+            return redirect('request_payment')
+
+    return render(request, 'request_payment.html', {
+        'applications': applications,
+        'requested_application_ids': requested_ids,
+    })
+
+@login_required
+def view_pay_requests(request):
+    if request.user.role != 'employer':
+        return redirect('home')
+
+    # Get all requests for this employer's jobs
+    pay_requests = PayRequest.objects.filter(
+        job_application__job__employer=request.user
+    ).select_related('job_application', 'requester')
+
+    return render(request, 'pay_requests.html', {'requests': pay_requests})
+
+
+
+@login_required
+def handle_pay_request(request, request_id, action):
+    pay_request = get_object_or_404(PayRequest, id=request_id, job_application__job__employer=request.user)
+
+    if action == 'accept':
+        pay_request.status = 'accepted'
+        # OPTIONAL: logic to notify admin to release funds
+        # You can simulate release by sending email or updating another field
+    elif action == 'reject':
+        pay_request.status = 'rejected'
+
+    pay_request.save()
+    messages.success(request, f"Payment request has been {pay_request.status}.")
+    return redirect('view_pay_requests')
+

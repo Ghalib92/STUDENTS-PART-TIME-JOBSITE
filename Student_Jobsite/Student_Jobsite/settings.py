@@ -43,6 +43,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +52,37 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Pages',
 ]
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Job Site Admin",
+    "site_header": "Job Site",
+    "site_brand": "Job Site",
+    "welcome_sign": "Welcome to Job Site Admin Panel",
+    "copyright": "Job Site",
+
+    "topmenu_links": [
+        {"name": "Home", "url": "/", "permissions": ["auth.view_user"]},
+    ],
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "order_with_respect_to": ["auth", "core", "Accounts"],
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "core.YourModel": "fas fa-box",  # Replace with your models
+    },
+
+    "show_ui_builder": False,
+}
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -24,9 +24,16 @@ urlpatterns = [
     path('chat/', views.chat_list, name='chat_list'),
     path('room/<int:thread_id>/', views.chat_room, name='chat_room'),
 
+#request pay
+    path('initiate-job-payment/', views.initiate_job_payment, name='initiate_job_payment'),
+    path('request-payment/', views.request_payment, name='request_payment'),
+    path('pay-requests/', views.view_pay_requests, name='view_pay_requests'),
+    path('handle-pay-request/<int:request_id>/<str:action>/', views.handle_pay_request, name='handle_pay_request'),
+
 
 
 ]
+
 
 
 

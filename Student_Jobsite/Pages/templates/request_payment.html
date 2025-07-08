@@ -1,0 +1,95 @@
+{% extends 'Staff/base.html' %}
+{% load static %}
+
+{% block title %}Request Payment{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: var(--primary, #0a0a0a);
+    color: var(--text, #f0f0f0);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  h2 {
+    color: var(--accent, #d4af37);
+    border-bottom: 2px solid var(--accent, #d4af37);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .job-card {
+    background: var(--secondary, #121212);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.08);
+    transition: transform 0.2s ease;
+  }
+
+  .job-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(212, 175, 55, 0.18);
+  }
+
+  .job-card p {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+
+  .job-card form {
+    text-align: right;
+  }
+ .requested-label {
+    padding: 10px 16px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-dim, #aaaaaa);
+    font-weight: bold;
+  }
+  .job-card button {
+    background-color: var(--accent, #d4af37);
+    color: #0a0a0a;
+    font-weight: bold;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .job-card button:hover {
+    background-color: #c39c34;
+  }
+
+  .no-apps {
+    text-align: center;
+    color: var(--text-dim, #aaaaaa);
+    font-size: 1.1rem;
+    margin-top: 40px;
+  }
+</style>
+
+<div class="container" style="max-width: 700px; margin: auto;">
+  <h2>Request Payment</h2>
+  {% for app in applications %}
+    <div class="job-card">
+      <p><strong>{{ app.job.title }}</strong> &mdash; {{ app.job.location }}</p>
+      {% if app.id in requested_application_ids %}
+        <span class="requested-label">✔️ Requested</span>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="application_id" value="{{ app.id }}">
+          <button type="submit">Request Payment</button>
+        </form>
+      {% endif %}
+    </div>
+  {% empty %}
+    <p class="no-apps">No approved jobs yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}
